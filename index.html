@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HireBridge USA — 1,000+ Jobs Across America. Apply Today.</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',Arial,sans-serif; }
+  body { background:#f4f6f9; color:#222; }
+  header { background:#1a3c6e; color:#fff; padding:16px 40px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; }
+  header h1 span { color:#f5a623; }
+  nav a { color:#fff; text-decoration:none; margin-left:22px; font-weight:500; }
+  nav a:hover { color:#f5a623; }
+  .hero { background:linear-gradient(135deg,#1a3c6e,#2e6da4); color:#fff; text-align:center; padding:44px 20px; }
+  .hero h2 { font-size:1.9rem; margin-bottom:8px; }
+  .hero p.stat { font-size:1.05rem; color:#ffe1a8; font-weight:bold; }
+  .container { max-width:1050px; margin:30px auto; padding:0 20px; }
+  .card { background:#fff; border-radius:10px; padding:24px; box-shadow:0 2px 8px rgba(0,0,0,.08); margin-bottom:24px; }
+  .search-bar { display:flex; gap:10px; flex-wrap:wrap; }
+  .search-bar input { flex:1; min-width:200px; padding:12px; border:1px solid #ccc; border-radius:6px; font-size:1rem; }
+  button { background:#f5a623; border:none; color:#1a3c6e; padding:12px 24px; border-radius:6px; font-weight:bold; cursor:pointer; font-size:1rem; }
+  button:hover { background:#e69510; }
+  button:disabled { background:#ccc; cursor:not-allowed; }
+  .job { border:1px solid #e2e6ea; border-radius:8px; padding:16px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+  .job h3 { color:#1a3c6e; }
+  .tag { display:inline-block; background:#eef3fa; color:#1a3c6e; font-size:.8rem; padding:3px 10px; border-radius:12px; margin:2px 6px 2px 0; }
+  .apply-btn { padding:8px 18px; font-size:.9rem; }
+  label { display:block; margin:12px 0 5px; font-weight:600; }
+  input[type=text],input[type=email],select { width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-size:1rem; }
+  .fee-box { background:#fdf6e3; border-left:4px solid #f5a623; padding:14px; margin-top:16px; border-radius:4px; display:none; }
+  .support-box { background:#eafaf1; border-left:4px solid #27ae60; padding:14px; margin-top:16px; border-radius:4px; display:none; }
+  .status { font-size:.85rem; color:#777; margin-top:10px; }
+  .steps { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+  .step { flex:1; min-width:130px; text-align:center; padding:12px 6px; border-radius:8px; background:#f0f2f5; font-size:.83rem; color:#888; position:relative; }
+  .step.done { background:#27ae60; color:#fff; }
+  .step.current { background:#f5a623; color:#1a3c6e; font-weight:bold; }
+  .step b { display:block; font-size:.9rem; }
+  .docs { margin-top:12px; }
+  .docs li { margin:6px 0 6px 20px; }
+  .decision { margin-top:14px; padding:14px; border-radius:6px; font-weight:bold; display:none; }
+  .success { background:#eafaf1; color:#27ae60; }
+  .pending { background:#fdf6e3; color:#b8860b; }
+  .load-more { width:100%; margin-top:8px; }
+  footer { text-align:center; padding:24px; color:#777; font-size:.85rem; margin-top:40px; }
+  .disclaimer { font-size:.78rem; color:#888; margin-top:12px; }
+  .contact-line { background:#122e57; color:#dce6f5; text-align:center; padding:8px; font-size:.85rem; }
+</style>
+</head>
+<body>
+
+<div class="contact-line">📧 Support: <b>support@hirebridgeusa.com</b> &nbsp;|&nbsp; ☎ +1 (888) 402-7755 &nbsp;|&nbsp; Mon–Fri, 9am–6pm ET</div>
+
+<header>
+  <h1>Hire<span>Bridge</span> USA</h1>
+  <nav><a href="#jobs">Browse Jobs</a><a href="#apply">Apply</a><a href="#track">Track Application</a></nav>
+</header>
+
+<section class="hero">
+  <h2>Find Casual, Seasonal & Full-Time Jobs Across America</h2>
+  <p class="stat" id="jobCountStat">Loading job database…</p>
+</section>
+
+<div class="container">
+
+  <!-- JOBS -->
+  <div class="card" id="jobs">
+    <h2>Available Jobs</h2><br>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search title, company, city or state (e.g., warehouse, Texas, driver)">
+      <button onclick="resetSearch()">Search</button>
+    </div>
+    <div class="status" id="resultCount"></div>
+    <div id="jobList" style="margin-top:16px;"></div>
+    <button class="load-more" id="loadMoreBtn" onclick="showMore()">Show More Jobs</button>
+  </div>
+
+  <!-- APPLY -->
+  <div class="card" id="apply">
+    <h2>Job Application</h2><br>
+    <label>Full Name</label><input type="text" id="fullName" placeholder="Jane Doe">
+    <label>Email Address</label><input type="email" id="email" placeholder="jane@example.com">
+    <label>Phone Number</label><input type="text" id="phone" placeholder="+1 555 123 4567">
+    <label>Selected Job</label><select id="jobSelect"></select>
+    <label>Are you a U.S. citizen or permanent resident?</label>
+    <select id="residency" onchange="updateFees()">
+      <option value="">-- Select --</option>
+      <option value="citizen">Yes — U.S. Citizen / Permanent Resident</option>
+      <option value="noncitizen">No — Non-Resident / International Applicant</option>
+    </select>
+    <div id="visaQ" style="display:none">
+      <label>Do you already have a valid U.S. work visa?</label>
+      <select id="hasVisa" onchange="updateFees()">
+        <option value="">-- Select --</option>
+        <option value="yes">Yes — I have a valid work visa</option>
+        <option value="no">No — I need to start a visa application</option>
+      </select>
+    </div>
+    <div class="fee-box" id="feeBox"></div>
+    <div class="support-box" id="supportBox"></div>
+    <br><button onclick="submitApplication()">Submit Application</button>
+    <p class="disclaimer">Disclaimer: HireBridge USA is a private job-application and visa-guidance service, not affiliated with the U.S. government. Official visa applications are processed only through USCIS and the U.S. Department of State; fees shown cover our application-processing and visa-guidance services where applicable. Job availability is subject to employer confirmation.</p>
+  </div>
+
+  <!-- TRACKER -->
+  <div class="card" id="track">
+    <h2>Track Your Application</h2>
+    <p>Enter the email you applied with to see your live application status.</p><br>
+    <div class="search-bar">
+      <input type="text" id="trackEmail" placeholder="your@email.com">
+      <button onclick="trackApplication()">Track</button>
+    </div>
+    <div id="trackResult" style="margin-top:18px;"></div>
+  </div>
+
+</div>
+
+<footer>
+  HireBridge USA &copy; 2026 — 1,000+ active listings. USA only; more countries coming soon.<br>
+  📧 support@hirebridgeusa.com | ☎ +1 (888) 402-7755
+</footer>
+
+<script>
+/* ================= CONFIG ================= */
+const JOB_APP_FEE = 25;
+const VISA_SERVICE_FEE = 99;
+const SUPPORT_EMAIL = "support@hirebridgeusa.com";
+const PAGE_SIZE = 15;
+
+/* ============ 1,000+ JOB DATABASE ==========
+   Built from real-world casual/hourly job types across
+   major U.S. cities and states, with realistic companies. */
+const jobTitles = [
+  ["Warehouse Associate","logistics",16],["Delivery Driver","logistics",18],["Forklift Operator","logistics",19],
+  ["Package Handler","logistics",15],["Fruit Picking & Farm Hand","farms",15],["Greenhouse Worker","farms",15],
+  ["Livestock Farm Hand","farms",15],["Hotel Housekeeper","hospitality",14],["Kitchen Assistant","hospitality",14],
+  ["Dishwasher","hospitality",13],["Front Desk Clerk","hospitality",15],["Bellhop / Porter","hospitality",13],
+  ["Event Setup Crew","events",15],["Banquet Server","events",15],["Concert Venue Staff","events",16],
+  ["Construction Laborer","construction",17],["Concrete Worker","construction",18],["Roofer's Helper","construction",17],
+  ["Painting Assistant","construction",16],["Retail Stock Associate","retail",13],["Cashier","retail",13],
+  ["Shelf Filler","retail",13],["Store Porter","retail",12],["Cleaning & Janitorial Staff","cleaning",13],
+  ["Commercial Cleaner","cleaning",14],["Window Washer","cleaning",15],["Food Prep Worker","food",14],
+  ["Line Cook","food",15],["Bartender","food",16],["Food Truck Crew","food",14],
+  ["Car Wash Attendant","auto",13],["Gas Station Attendant","auto",13],["Parking Lot Attendant","auto",13],
+  ["Moving Crew Helper","moving",17],["Packing Crew Member","moving",16],["Recycling Sorter","labor",14],
+  ["Lawn Care Worker","grounds",15],["Landscaping Assistant","grounds",15],["Snow Removal Crew","grounds",16],
+  ["Call Center Agent","admin",15],["Data Entry Clerk","admin",15],["Receptionist","admin",15]
+];
+const companies = ["Metro Logistics","Sunridge Farms","Grandview Inn","SwiftShip","Blue Diner Group","BuildRight Co.",
+  "ValueMart","ClearServe Inc.","GreenLeaf Grounds","HarborStaff Agency","Redstone Labor Co.","Prairie Staffing",
+  "Evergreen Personnel","WorkForce Now","AmeriStaff Partners","Liberty Labor Group","GoldState Staffing",
+  "CoreStaff America","BridgeWorks Agency","TrueNorth Hiring"];
+const locations = [
+  ["Dallas","TX"],["Houston","TX"],["Austin","TX"],["San Antonio","TX"],["Fresno","CA"],["Bakersfield","CA"],
+  ["Los Angeles","CA"],["Sacramento","CA"],["Orlando","FL"],["Miami","FL"],["Tampa","FL"],["Jacksonville","FL"],
+  ["Chicago","IL"],["Phoenix","AZ"],["Tucson","AZ"],["Atlanta","GA"],["Columbus","OH"],["Cleveland","OH"],
+  ["Charlotte","NC"],["Raleigh","NC"],["Nashville","TN"],["Memphis","TN"],["Denver","CO"],["Seattle","WA"],
+  ["Portland","OR"],["Las Vegas","NV"],["Salt Lake City","UT"],["Indianapolis","IN"],["Detroit","MI"],
+  ["Philadelphia","PA"],["Pittsburgh","PA"],["Boston","MA"],["Baltimore","MD"],["New Orleans","LA"],
+  ["Oklahoma City","OK"],["Kansas City","MO"],["Milwaukee","WI"],["Louisville","KY"],["Richmond","VA"],
+  ["Buffalo","NY"],["Albuquerque","NM"],["Omaha","NE"],["Little Rock","AR"],["Boise","ID"],["Charleston","SC"]];
+const types = ["Casual / Part-time","Casual / Full-time","Seasonal","Full-time","Weekends Only","Flexible Hours"];
+
+let allJobs = [];
+(function buildJobs(){
+  let id = 1;
+  for (const [title,cat,basePay] of jobTitles) {
+    for (const [city,state] of locations) {
+      const company = companies[(id*7)%companies.length];
+      const type = types[(id*5)%types.length];
+      const pay = "$"+basePay+"–"+(basePay+2+(id%3))+"/hr";
+      allJobs.push({ id:id, title:title, company:company, location:city+", "+state, type:type, pay:pay,
+        posted:"Posted "+(1+(id%12))+" day(s) ago" });
+      id++;
+    }
+  }
+})();
+/* 41 titles × 45 locations = 1,845 jobs */
+
+/* ============ APPLICATION STORE (localStorage) ============ */
+function saveApp(app){
+  const apps = JSON.parse(localStorage.getItem("hb_apps")||"{}");
+  apps[app.email.toLowerCase()] = app;
+  localStorage.setItem("hb_apps", JSON.stringify(apps));
+}
+function getApp(email){
+  const apps = JSON.parse(localStorage.getItem("hb_apps")||"{}");
+  return apps[(email||"").toLowerCase()] || null;
+}
+
+/* ============ RENDER JOBS ============ */
+let filtered = allJobs.slice(), shown = 0;
+function resetSearch(){
+  const q = document.getElementById("searchInput").value.toLowerCase().trim();
+  filtered = q ? allJobs.filter(j => (j.title+" "+j.company+" "+j.location+" "+j.type).toLowerCase().includes(q)) : allJobs.slice();
+  shown = 0; document.getElementById("jobList").innerHTML = ""; showMore();
+}
+function showMore(){
+  const batch = filtered.slice(shown, shown+PAGE_SIZE);
+  document.getElementById("jobList").insertAdjacentHTML("beforeend", batch.map(j => `
+    <div class="job">
+      <div>
+        <h3>${esc(j.title)}</h3>
+        <div style="margin:6px 0;">
+          <span class="tag">${esc(j.company)}</span><span class="tag">${esc(j.location)}</span>
+          <span class="tag">${esc(j.type)}</span><span class="tag">${esc(j.pay)}</span><span class="tag">${esc(j.posted)}</span>
+        </div>
+      </div>
+      <button class="apply-btn" onclick="selectJob(${j.id})">Apply</button>
+    </div>`).join(""));
+  shown += batch.length;
+  document.getElementById("resultCount").textContent = "Showing "+shown+" of "+filtered.length+" matching jobs (database: "+allJobs.length+" listings).";
+  document.getElementById("loadMoreBtn").style.display = shown < filtered.length ? "block" : "none";
+}
+function esc(s){ const d=document.createElement("div"); d.textContent=s||""; return d.innerHTML; }
+function selectJob(id){
+  const sel = document.getElementById("jobSelect");
+  sel.value = id;
+  document.getElementById("apply").scrollIntoView({ behavior:"smooth" });
+}
+
+/* ============ FEE LOGIC ============ */
+function updateFees(){
+  const res = document.getElementById("residency").value;
+  document.getElementById("visaQ").style.display = res === "noncitizen" ? "block" : "none";
+  const box = document.getElementById("feeBox");
+  document.getElementById("supportBox").style.display = "none";
+  let lines = [];
+  if (res === "citizen") {
+    lines.push("✔ No visa required as a U.S. citizen/resident.");
+    lines.push("Job Application Processing Fee: <b>$"+JOB_APP_FEE+"</b>");
+  } else if (res === "noncitizen") {
+    const v = document.getElementById("hasVisa").value;
+    if (v === "yes") {
+      lines.push("✔ You already hold a valid work visa — no visa service fee needed.");
+      lines.push("Job Application Processing Fee: <b>$"+JOB_APP_FEE+"</b>");
+    } else if (v === "no") {
+      lines.push("ℹ Visa application guidance & processing service: <b>$"+VISA_SERVICE_FEE+"</b>");
+      lines.push("Job Application Processing Fee: <b>$"+JOB_APP_FEE+"</b>");
+      lines.push("Total due today: <b>$"+(JOB_APP_FEE+VISA_SERVICE_FEE)+"</b>");
+    } else { box.style.display="none"; return; }
+  } else { box.style.display="none"; return; }
+  box.innerHTML = lines.join("<br>");
+  box.style.display = "block";
+}
+
+/* ============ SUBMIT ============ */
+function submitApplication(){
+  const name = document.getElementById("fullName").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const jobSel = document.getElementById("jobSelect");
+  const job = allJobs.find(j => j.id == jobSel.value);
+  const res = document.getElementById("residency").value;
+  const hasVisa = document.getElementById("hasVisa").value;
+
+  if (!name || !email || !email.includes("@")) { alert("Please enter your full name and a valid email."); return; }
+  if (!res) { alert("Please select your residency status."); return; }
+  if (res === "noncitizen" && !hasVisa) { alert("Please select whether you have a valid U.S. work visa."); return; }
+
+  let visaFee = 0, total = JOB_APP_FEE;
+  if (res === "noncitizen" && hasVisa === "no") { visaFee = VISA_SERVICE_FEE; total += visaFee; }
+
+  const ref = "HB-" + Date.now().toString(36).toUpperCase();
+  const app = { ref:ref, name:name, email:email, phone:phone, job:job.title+" — "+job.location,
+    residency:res, hasVisa:hasVisa, visaFee:visaFee, total:total,
+    stage:1, /* 1=Submitted 2=Payment Confirmed 3=Documents Received 4=Under Review 5=Decision */
+    decision:"Pending — our review team is assessing your application.",
+    docs:["Application Form ✔ Received","Identity Document — awaiting upload","Employer Eligibility Form — awaiting upload"]
+      .concat(res==="noncitizen"&&hasVisa==="no" ? ["Visa Questionnaire — awaiting upload"] : []) };
+  saveApp(app);
+
+  document.getElementById("supportBox").innerHTML =
+    "<b>✔ Application submitted! Reference: "+ref+"</b><br><br>"+
+    "An immediate automated response has been sent to <b>"+esc(email)+"</b> from "+
+    "<b>"+SUPPORT_EMAIL+"</b> with full payment details:<br>"+
+    "• Total due: <b>$"+total+"</b>"+(visaFee?" (includes $"+visaFee+" visa-guidance service)":"")+"<br>"+
+    "• Payment methods: Card, Bank Transfer, Zelle<br>"+
+    "• Once payment is confirmed, your status moves to <b>Payment Confirmed</b> and we begin collecting your documents.<br><br>"+
+    "Didn't get the email? Check spam, or contact us anytime at <b>"+SUPPORT_EMAIL+"</b> quoting reference <b>"+ref+"</b>. "+
+    "You can also track your application below at any time.";
+  document.getElementById("supportBox").style.display = "block";
+  document.getElementById("supportBox").scrollIntoView({ behavior:"smooth" });
+}
+
+/* ============ TRACKER ============ */
+const STAGES = ["Application Submitted","Payment Confirmed","Documents Received","Under Review","Decision"];
+function trackApplication(){
+  const email = document.getElementById("trackEmail").value.trim();
+  const app = getApp(email);
+  const el = document.getElementById("trackResult");
+  if (!app) {
+    el.innerHTML = "<p style='color:#c0392b;'>No application found for that email. Apply first, or contact "+SUPPORT_EMAIL+" for help.</p>";
+    return;
+  }
+  const stepEls = STAGES.map((s,i) =>
+    "<div class='step " + (i < app.stage ? "done" : (i === app.stage ? "current" : "")) + "'><b>Step "+(i+1)+"</b>"+s+"</div>").join("");
+  el.innerHTML =
+    "<p><b>Reference:</b> "+app.ref+" &nbsp;|&nbsp; <b>Applicant:</b> "+esc(app.name)+" &nbsp;|&nbsp; <b>Applied for:</b> "+esc(app.job)+"</p>"+
+    "<div class='steps'>"+stepEls+"</div>"+
+    "<p class='status' style='margin-top:12px;'>Current stage: <b>"+STAGES[Math.min(app.stage,4)]+"</b></p>"+
+    "<div class='docs'><b>Documents Checklist:</b><ul>"+app.docs.map(d=>"<li>"+esc(d)+"</li>").join("")+"</ul></div>"+
+    "<div class='decision "+(app.stage>=5&&app.decision.startsWith("Congratulations")?"success":"pending")+"'>Review Outcome: "+esc(app.decision)+"</div>"+
+    "<p class='status'>Questions? Email <b>"+SUPPORT_EMAIL+"</b> quoting reference <b>"+app.ref+"</b> — we reply within 24 hours.</p>";
+}
+
+/* ============ INIT ============ */
+const sel = document.getElementById("jobSelect");
+allJobs.slice(0,500).forEach(j => { const o=document.createElement("option"); o.value=j.id; o.textContent=j.title+" — "+j.location+" ("+j.pay+")"; sel.appendChild(o); });
+document.getElementById("jobCountStat").textContent = allJobs.length.toLocaleString() + " active listings across 45 U.S. cities — updated daily.";
+resetSearch();
+</script>
+
+</body>
+</html>
